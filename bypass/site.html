@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W9rzz Tools</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(90deg, rgba(30,30,30,0.95) 0%, rgba(50,50,50,0.95) 100%);
+            backdrop-filter: blur(10px);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+            border-bottom: 2px solid rgba(138,138,138,0.3);
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #a8a8a8, #e0e0e0, #a8a8a8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255,255,255,0.3);
+            letter-spacing: 3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #c0c0c0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #888, #fff);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .section {
+            min-height: 100vh;
+            padding: 120px 50px 50px;
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section h2 {
+            font-size: 48px;
+            margin-bottom: 50px;
+            text-align: center;
+            background: linear-gradient(135deg, #a0a0a0, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .key-container {
+            max-width: 500px;
+            margin: 100px auto;
+            text-align: center;
+        }
+
+        .key-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 18px;
+            background: rgba(40,40,40,0.8);
+            border: 2px solid rgba(138,138,138,0.3);
+            border-radius: 10px;
+            color: #fff;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .key-input:focus {
+            outline: none;
+            border-color: rgba(169,169,169,0.6);
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        .key-button {
+            padding: 18px 50px;
+            font-size: 18px;
+            background: linear-gradient(135deg, #505050, #707070);
+            color: #fff;
+            border: 2px solid #888;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .key-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255,255,255,0.2);
+            background: linear-gradient(135deg, #707070, #909090);
+            border-color: #aaa;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .antivirus-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .drop-zone {
+            border: 3px dashed rgba(138,138,138,0.5);
+            border-radius: 20px;
+            padding: 80px 40px;
+            text-align: center;
+            background: rgba(40,40,40,0.6);
+            transition: all 0.3s ease;
+            margin-bottom: 40px;
+        }
+
+        .drop-zone.dragover {
+            border-color: #4CAF50;
+            background: rgba(76,175,80,0.1);
+            transform: scale(1.02);
+        }
+
+        .drop-zone p {
+            color: #a0a0a0;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        .scanning {
+            display: none;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .scanning.active {
+            display: block;
+        }
+
+        .spinner {
+            font-size: 80px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .logs-container {
+            background: rgba(40,40,40,0.8);
+            border: 1px solid rgba(138,138,138,0.3);
+            border-radius: 15px;
+            padding: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 30px;
+        }
+
+        .logs-container h3 {
+            color: #d0d0d0;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .log-entry {
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background: rgba(60,60,60,0.6);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 16px;
+        }
+
+        .log-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .result-message {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            font-size: 20px;
+        }
+
+        .result-message.active {
+            display: block;
+        }
+
+        .result-message.safe {
+            background: rgba(76,175,80,0.2);
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+        }
+
+        .result-message.danger {
+            background: rgba(244,67,54,0.2);
+            border: 2px solid #f44336;
+            color: #f44336;
+        }
+
+        .result-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .nav-links {
+                gap: 15px;
+                font-size: 14px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .section {
+                padding: 100px 20px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">W9rzz Tools</div>
+        <ul class="nav-links">
+            <li><a href="#" data-section="home">Home</a></li>
+            <li><a href="#" data-section="sobre">Sobre</a></li>
+            <li><a href="#" data-section="antivirus">Anti-Vírus</a></li>
+            <li><a href="#" data-section="bypass">Bypass</a></li>
+        </ul>
+    </nav>
+
+    <section class="section active" id="home">
+        <h2>Acesso Restrito</h2>
+        <div class="key-container">
+            <p style="color: #a0a0a0; margin-bottom: 20px;">Digite a chave para acessar o W9rzz Tools</p>
+            <input type="password" class="key-input" id="keyInput" placeholder="Digite a chave...">
+            <button class="key-button" onclick="checkKey()">Entrar</button>
+            <p class="error-message" id="errorMsg">Chave incorreta! Tente novamente.</p>
+        </div>
+    </section>
+
+    <section class="section" id="welcome">
+        <h2>Bem-vindo ao W9rzz Tools</h2>
+        <div style="max-width: 800px; margin: 50px auto; text-align: center;">
+            <p style="color: #a0a0a0; font-size: 20px; line-height: 1.8;">
+                Você está acessando o W9rzz Tools. Aqui você encontra ferramentas úteis 
+                incluindo nosso verificador de vírus. Use o menu acima para navegar pelas 
+                ferramentas disponíveis.
+            </p>
+        </div>
+    </section>
+
+    <section class="section" id="sobre">
+        <h2>Sobre</h2>
+        <div style="max-width: 800px; margin: 50px auto;">
+            <p style="color: #a0a0a0; font-size: 18px; line-height: 1.8; margin-bottom: 30px;">
+                O W9rzz Tools é uma plataforma dedicada a fornecer ferramentas de segurança e utilidades 
+                para a comunidade. Nosso objetivo é criar ferramentas confiáveis que ajudem a proteger 
+                e melhorar a experiência dos usuários.
+            </p>
+            <p style="color: #a0a0a0; font-size: 18px; line-height: 1.8;">
+                Nossa ferramenta de Anti-Vírus permite que você verifique arquivos e pastas de forma 
+                rápida e segura, garantindo que seu sistema esteja protegido contra ameaças.
+            </p>
+        </div>
+    </section>
+
+    <section class="section" id="antivirus">
+        <h2>Anti-Vírus Scanner</h2>
+        <div class="antivirus-container">
+            <div class="drop-zone" id="dropZone">
+                <div style="font-size: 80px; margin-bottom: 20px;">📁</div>
+                <p>Arraste e solte arquivos ou pastas aqui para verificar</p>
+            </div>
+
+            <div class="scanning" id="scanning">
+                <div class="spinner">⏳</div>
+                <p style="color: #a0a0a0; font-size: 18px; margin-top: 20px;">Verificando pasta...</p>
+            </div>
+
+            <div class="result-message" id="resultMessage">
+                <div class="result-icon" id="resultIcon"></div>
+                <div id="resultText"></div>
+            </div>
+
+            <div class="logs-container" id="logsContainer" style="display: none;">
+                <h3>📋 Logs de Verificação</h3>
+                <div id="logsList"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="bypass">
+        <h2>Zen Bypass</h2>
+        <div class="antivirus-container">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <div style="font-size: 80px; margin-bottom: 20px;">☠️</div>
+                <p style="color: #a0a0a0; font-size: 18px; line-height: 1.8; margin-bottom: 30px;">
+                    Chega de esperar! Ignore Linkvertise, Loot-Link, Rekonise, Bstlar, Sub4unlock, 
+                    Boost.ink, Mboost, Platoboost, Codex e inúmeros outros.
+                </p>
+            </div>
+
+            <div style="background: rgba(40,40,40,0.8); border: 1px solid rgba(138,138,138,0.3); border-radius: 15px; padding: 40px;">
+                <label style="color: #c0c0c0; font-size: 16px; display: block; margin-bottom: 15px;">
+                    🔗 Insira seu URL para ignorar
+                </label>
+                <input 
+                    type="text" 
+                    id="bypassInput" 
+                    class="key-input" 
+                    placeholder="https://mboost.me/"
+                    style="margin-bottom: 30px;"
+                >
+                <button class="key-button" onclick="processBypass()" style="width: 100%;">
+                    Enviar
+                </button>
+            </div>
+
+            <div class="scanning" id="bypassScanning">
+                <div class="spinner">⏳</div>
+                <p style="color: #a0a0a0; font-size: 18px; margin-top: 20px;">Carregando...</p>
+            </div>
+
+            <div class="logs-container" id="bypassLogs" style="display: none;">
+                <h3>📋 Logs de Bypass</h3>
+                <div id="bypassLogsList"></div>
+            </div>
+
+            <div id="bypassResult" style="display: none; margin-top: 30px; padding: 30px; background: rgba(76,175,80,0.2); border: 2px solid #4CAF50; border-radius: 15px; text-align: center;">
+                <div style="font-size: 60px; margin-bottom: 15px;">✅</div>
+                <p style="color: #4CAF50; font-size: 20px; margin-bottom: 20px;">Bypass realizado com sucesso!</p>
+                <div style="background: rgba(40,40,40,0.8); padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <p style="color: #a0a0a0; font-size: 14px; margin-bottom: 10px;">Link Bypassado:</p>
+                    <p id="bypassedUrl" style="color: #fff; font-size: 16px; word-break: break-all;"></p>
+                </div>
+                <button class="key-button" onclick="copyBypassedLink()" style="margin-right: 10px;">Copiar Link</button>
+                <a id="bypassLink" href="#" target="_blank" style="display: inline-block; padding: 18px 50px; font-size: 18px; background: linear-gradient(135deg, #505050, #707070); color: #fff; border: 2px solid #888; border-radius: 50px; text-decoration: none; text-transform: uppercase; letter-spacing: 2px;">Abrir Link</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const k = 'keyperm';
+        let unlocked = false;
+
+        function checkKey() {
+            const input = document.getElementById('keyInput').value;
+            const error = document.getElementById('errorMsg');
+            
+            if (input === k) {
+                unlocked = true;
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById('welcome').classList.add('active');
+                error.style.display = 'none';
+            } else {
+                error.style.display = 'block';
+            }
+        }
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = this.getAttribute('data-section');
+                
+                if (!unlocked && section !== 'home') {
+                    alert('Por favor, insira a chave na página Home primeiro!');
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    document.getElementById('home').classList.add('active');
+                    return;
+                }
+                
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                if (section === 'home' && unlocked) {
+                    document.getElementById('welcome').classList.add('active');
+                } else {
+                    document.getElementById(section).classList.add('active');
+                }
+            });
+        });
+
+        document.getElementById('keyInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkKey();
+            }
+        });
+
+        const dropZone = document.getElementById('dropZone');
+        const scanning = document.getElementById('scanning');
+        const resultMessage = document.getElementById('resultMessage');
+        const logsContainer = document.getElementById('logsContainer');
+        const logsList = document.getElementById('logsList');
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            
+            const files = Array.from(e.dataTransfer.files);
+            if (files.length > 0) {
+                scanFiles(files);
+            }
+        });
+
+        function scanFiles(files) {
+            resultMessage.classList.remove('active');
+            logsContainer.style.display = 'none';
+            logsList.innerHTML = '';
+            scanning.classList.add('active');
+            
+            setTimeout(() => {
+                scanning.classList.remove('active');
+                logsContainer.style.display = 'block';
+                
+                const hasVirus = Math.random() < 0.3;
+                
+                files.forEach((file, index) => {
+                    setTimeout(() => {
+                        const isInfected = hasVirus && index === Math.floor(files.length / 2);
+                        const logEntry = document.createElement('div');
+                        logEntry.className = 'log-entry';
+                        
+                        if (isInfected) {
+                            logEntry.innerHTML = `
+                                <span class="log-icon">❌</span>
+                                <span style="color: #f44336;">${file.name} - VÍRUS DETECTADO!</span>
+                            `;
+                        } else {
+                            logEntry.innerHTML = `
+                                <span class="log-icon">✅</span>
+                                <span style="color: #4CAF50;">${file.name} - Limpo</span>
+                            `;
+                        }
+                        
+                        logsList.appendChild(logEntry);
+                    }, index * 300);
+                });
+                
+                setTimeout(() => {
+                    resultMessage.classList.add('active');
+                    if (hasVirus) {
+                        resultMessage.classList.remove('safe');
+                        resultMessage.classList.add('danger');
+                        document.getElementById('resultIcon').textContent = '❌';
+                        document.getElementById('resultText').innerHTML = '<strong>AMEAÇA DETECTADA!</strong><br>Vírus encontrado nos arquivos verificados.';
+                    } else {
+                        resultMessage.classList.remove('danger');
+                        resultMessage.classList.add('safe');
+                        document.getElementById('resultIcon').textContent = '🛡️';
+                        document.getElementById('resultText').innerHTML = '<strong>PASTA SEGURA!</strong><br>Nenhum vírus foi detectado.';
+                    }
+                }, files.length * 300 + 500);
+            }, 2000);
+        }
+
+        function processBypass() {
+            const input = document.getElementById('bypassInput').value;
+            const scanning = document.getElementById('bypassScanning');
+            const logs = document.getElementById('bypassLogs');
+            const logsList = document.getElementById('bypassLogsList');
+            const result = document.getElementById('bypassResult');
+            const link = document.getElementById('bypassLink');
+            const bypassedUrl = document.getElementById('bypassedUrl');
+            
+            if (input.trim() === '') {
+                alert('Por favor, insira um URL válido!');
+                return;
+            }
+            
+            result.style.display = 'none';
+            logs.style.display = 'none';
+            logsList.innerHTML = '';
+            scanning.classList.add('active');
+            
+            const bypassSteps = [
+                { icon: '🔍', message: 'Analisando URL...', color: '#a0a0a0' },
+                { icon: '🔓', message: 'Detectando sistema de proteção...', color: '#a0a0a0' },
+                { icon: '⚙️', message: 'Conectando à API de bypass...', color: '#a0a0a0' },
+                { icon: '🌐', message: 'Processando requisição...', color: '#a0a0a0' }
+            ];
+            
+            setTimeout(() => {
+                scanning.classList.remove('active');
+                logs.style.display = 'block';
+                
+                bypassSteps.forEach((step, index) => {
+                    setTimeout(() => {
+                        const logEntry = document.createElement('div');
+                        logEntry.className = 'log-entry';
+                        logEntry.innerHTML = `
+                            <span class="log-icon">${step.icon}</span>
+                            <span style="color: ${step.color};">${step.message}</span>
+                        `;
+                        logsList.appendChild(logEntry);
+                        
+                        if (index === bypassSteps.length - 1) {
+                            setTimeout(() => {
+                                performBypass(input, logsList);
+                            }, 500);
+                        }
+                    }, index * 600);
+                });
+            }, 1500);
+        }
+
+        async function performBypass(url, logsList) {
+            const result = document.getElementById('bypassResult');
+            const link = document.getElementById('bypassLink');
+            const bypassedUrl = document.getElementById('bypassedUrl');
+            
+            try {
+                const logEntry1 = document.createElement('div');
+                logEntry1.className = 'log-entry';
+                logEntry1.innerHTML = `
+                    <span class="log-icon">⚡</span>
+                    <span style="color: #a0a0a0;">Conectando ao Zen Bypass API...</span>
+                `;
+                logsList.appendChild(logEntry1);
+                
+                const apiUrl = `https://bypass-plum.vercel.app/api/bypass?url=${encodeURIComponent(url)}`;
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                const logEntry2 = document.createElement('div');
+                logEntry2.className = 'log-entry';
+                
+                if (data.success && data.result) {
+                    logEntry2.innerHTML = `
+                        <span class="log-icon">✅</span>
+                        <span style="color: #4CAF50;">Bypass concluído com sucesso!</span>
+                    `;
+                    logsList.appendChild(logEntry2);
+                    
+                    setTimeout(() => {
+                        result.style.display = 'block';
+                        link.href = data.result;
+                        bypassedUrl.textContent = data.result;
+                    }, 500);
+                } else if (data.destination) {
+                    logEntry2.innerHTML = `
+                        <span class="log-icon">✅</span>
+                        <span style="color: #4CAF50;">Bypass concluído com sucesso!</span>
+                    `;
+                    logsList.appendChild(logEntry2);
+                    
+                    setTimeout(() => {
+                        result.style.display = 'block';
+                        link.href = data.destination;
+                        bypassedUrl.textContent = data.destination;
+                    }, 500);
+                } else {
+                    throw new Error(data.error || data.message || 'Falha no bypass');
+                }
+                
+            } catch (error) {
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                
+                if (error.message.includes('CORS') || error.message.includes('fetch')) {
+                    logEntry.innerHTML = `
+                        <span class="log-icon">⚠️</span>
+                        <span style="color: #ff9800;">Erro de CORS detectado. Redirecionando para bypass...</span>
+                    `;
+                    logsList.appendChild(logEntry);
+                    
+                    setTimeout(() => {
+                        const directUrl = `https://izen.lol/?url=${encodeURIComponent(url)}`;
+                        window.open(directUrl, '_blank');
+                        
+                        const logEntry2 = document.createElement('div');
+                        logEntry2.className = 'log-entry';
+                        logEntry2.innerHTML = `
+                            <span class="log-icon">🌐</span>
+                            <span style="color: #4CAF50;">Abrindo página de bypass em nova aba...</span>
+                        `;
+                        logsList.appendChild(logEntry2);
+                    }, 1000);
+                } else {
+                    logEntry.innerHTML = `
+                        <span class="log-icon">❌</span>
+                        <span style="color: #f44336;">Erro: ${error.message || 'Não foi possível fazer o bypass deste link.'}</span>
+                    `;
+                    logsList.appendChild(logEntry);
+                }
+            }
+        }
+
+        async function tryAlternativeBypass(url, logsList) {
+            // Função removida - usando apenas a API do izen.lol
+        }
+
+        function copyBypassedLink() {
+            const url = document.getElementById('bypassedUrl').textContent;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Link copiado para a área de transferência!');
+            });
+        }
+    </script>
+</body>
+</html>
